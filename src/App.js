@@ -25,7 +25,7 @@ class Cell extends Component {
       var divStyle = null,
           classes = this.props.active? 'checked grid' : 'grid';
       
-      if (this.props.columnId == 0) {
+      if (this.props.columnId === 0) {
           divStyle =  {clear: 'right'};
       }
   
@@ -36,9 +36,7 @@ class Cell extends Component {
           id={this.props.columnId}>&nbsp;
         </div>
       );
- 
   }
-
 }
 
 class Row extends Component {
@@ -94,14 +92,12 @@ class App extends Component {
   constructor(props){
     super(props)
 
+    this.result = ''
     this.state = {
       history: Immutable.List(),
       future: Immutable.List(),
-      items: Immutable.fromJS(grid) 
+      items: Immutable.fromJS(grid)
     }
-
-
-
   }
 
   onClick(rowId, colId) {
@@ -113,13 +109,24 @@ class App extends Component {
       items: newItems
     });
 
-    var m = this.state.items.toJS()
-    m.map( (data) => {
-      console.log(data.grids)
-    })
 
   }
+
   
+  componentDidUpdate(){
+
+    var m = this.state.items.toJS()
+    m.map( (data,i) => {
+       _.map(_.range(8), i => {
+          let a = _.pick(data.grids[i],['active']);
+             (a['active']) ? this.result+=1 : this.result+=0;
+       })
+    })
+    console.log(this.result)
+    
+  }
+
+ 
   undo() {
     if (this.state.history.size < 1) return;
     this.setState({
@@ -144,7 +151,8 @@ class App extends Component {
         <Sequencer onClick={this.onClick.bind(this)} grid={this.state.items} />
         <button className="btn btn-default" disabled={this.state.history.size < 1} onClick={this.undo.bind(this)}>Undo</button>
         <button className="btn btn-default" disabled={this.state.future.size < 1} onClick={this.redo.bind(this)}>Redo</button>
-      </div>
+        <p>{this.result}</p>
+     </div>
     );
   }
 
