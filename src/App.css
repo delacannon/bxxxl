@@ -1,0 +1,40 @@
+#appContainer {
+
+  border:1px solid black;
+}
+
+.sequencer {
+  display: block;
+  width: 700px;
+  float: left;
+  border:1px solid black;
+}
+
+.gridRow {
+  float: left;
+}
+
+.gridRow div:first-child {
+  width: 150px;
+  display: table-cell;
+  vertical-align: middle;
+  text-transform: capitalize;
+  padding-top: 6px;
+}
+
+.grid {
+  float: left;
+  background: #ffffff;
+  width: 30px;
+  height: 30px;
+  border:1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.grid:hover {
+  background: #999;
+}
+
+.checked {
+  background: #000;
+}
