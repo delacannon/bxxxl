@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import './App.css'
 import _ from 'lodash'
 import Immutable from 'immutable'
 
+import Sequencer from './components/Sequencer'
 
 const instruments = [
   '', '', '', '',
@@ -16,77 +16,6 @@ var grid =  _.map(instruments, (title, index) => {
 });
 
 
-class Cell extends Component {
-  constructor(props){
-    super(props)
-  }
-  
-  render(){
-      var divStyle = null,
-          classes = this.props.active? 'checked grid' : 'grid';
-      
-      if (this.props.columnId === 0) {
-          divStyle =  {clear: 'right'};
-      }
-  
-      return (
-        <div style={divStyle} 
-          onClick={this.props.onClick.bind(null, this.props.rowId, this.props.columnId )} 
-          className={classes} 
-          id={this.props.columnId}>&nbsp;
-        </div>
-      );
-  }
-}
-
-class Row extends Component {
-  constructor(props){
-    super(props)
-  }
-  
-  render(){
-      var columns = this.props.row.get('grids').map(column => {
-          return (
-              <Cell key={column.get('id')} active={column.get('active')} 
-                      onClick={this.props.onClick}
-                      columnId={column.get('id')} 
-                      rowId={this.props.row.get('id')}/>
-          );
-        }).toArray();
-        
-        return (
-          <div className='gridRow'>
-            <div className='title grid' id={this.props.row.get('id')}>{this.props.row.get('title')}</div>
-            {columns}
-          </div>
-        );
- 
-  }
-
-}
-
-class Sequencer extends Component {
-
-  constructor(props){
-    super(props)
-  }
-
-  render() {
-    
-      var rows = this.props.grid.map(row => {
-        return (
-          <Row key={Math.random()*100} row={row} onClick={this.props.onClick} />
-        );
-      }).toArray();
-
-      return (
-          <div className="sequencer">
-              {rows}
-          </div>
-      );
-    }
-}
-
 class App extends Component {
 
   constructor(props){
@@ -94,10 +23,9 @@ class App extends Component {
 
     this.result = ''
     this.state = {
-      history: Immutable.List(),
-      future: Immutable.List(),
-      items: Immutable.fromJS(grid)
+      items: Immutable.fromJS(grid),
     }
+
   }
 
   onClick(rowId, colId) {
@@ -105,52 +33,49 @@ class App extends Component {
     var newItems = this.state.items.updateIn([rowId, 'grids', colId, 'active'], active => !active);
     
     this.setState({
-      history: this.state.history.push(this.state.items),
       items: newItems
     });
 
-
   }
 
-  
-  componentDidUpdate(){
+  componentDidMount(){
 
     var m = this.state.items.toJS()
+
     m.map( (data,i) => {
        _.map(_.range(8), i => {
           let a = _.pick(data.grids[i],['active']);
              (a['active']) ? this.result+=1 : this.result+=0;
        })
     })
-    console.log(this.result)
-    
-  }
 
- 
-  undo() {
-    if (this.state.history.size < 1) return;
-    this.setState({
-      history: this.state.history.pop(),
-      future: this.state.future.push(this.state.items),
-      items: this.state.history.last()
-    });
   }
   
-  redo() {
-    if (this.state.future.size < 1) return;
+  componentDidUpdate(){
+   
+   /*
+    this.result=''
+    var m = this.state.items.toJS()
+
+    m.map( (data,i) => {
+       _.map(_.range(8), i => {
+          let a = _.pick(data.grids[i],['active']);
+             (a['active']) ? this.result+=1 : this.result+=0;
+       })
+    })
+
     this.setState({
-      items: this.state.future.last(),
-      history: this.state.history.push(this.state.items),
-      future: this.state.future.pop()
-    });
+      result: this.result
+    })
+    */
+    
   }
+ 
   
   render() {
     return (
       <div>
         <Sequencer onClick={this.onClick.bind(this)} grid={this.state.items} />
-        <button className="btn btn-default" disabled={this.state.history.size < 1} onClick={this.undo.bind(this)}>Undo</button>
-        <button className="btn btn-default" disabled={this.state.future.size < 1} onClick={this.redo.bind(this)}>Redo</button>
         <p>{this.result}</p>
      </div>
     );
