@@ -81,7 +81,24 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
     })
 
     this.props.spriteData(result)
-   
+
+
+  }
+
+  renderCanvas(){
+    
+    var m = this.props.grid
+
+    return m.map( ( data, i) => {
+       return _.map(_.range(8), j => {
+            let a = _.pick(data.grids[j],['active']);
+              if(a['active']){ 
+                return <Rect fill={'black'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/> 
+              }else{
+                return <Rect fill={'white'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/>
+              }
+         })
+    })
 
   }
   
@@ -107,19 +124,18 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
           </Col>
           </Row>
         </FormGroup>
-        
           <Row>
             <Col xs="6" sm="4"><Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} />
             </Col>
             <Col xs="6" sm="4">
-             <p>{/*this.props.sprite_data*/}</p>
-            </Col>
-            <Col xs="6" sm="4">
-               <Stage width={8} height={8} scaleX={4} scaleY={4}>
+               <Stage width={64} height={64} scaleX={4} scaleY={4}>
                 <Layer>
-                    <Rect fill={'black'} x={0} y={0} width={1} height={1}/>
+                   {this.renderCanvas()}
                 </Layer>
                </Stage>
+            </Col>
+            <Col xs="6" sm="4">
+              <p>{/*this.props.sprite_data*/}</p>
             </Col>
           </Row>
         </Form>
