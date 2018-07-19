@@ -29,15 +29,15 @@ class App extends Component {
 
   onMouseDown(rowId, colId,e) {
 
-if(e.nativeEvent.which === 1 || e.type==='click'){
-    if(!this.state.isDown){
-      let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
-      this.props.updateGrid(rowId, colId, isActive )
-      this.setState({
-        isDown:true
-      })
+  if(e.nativeEvent.which === 1 || e.type==='click'){
+      if(!this.state.isDown){
+        let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
+        this.props.updateGrid(rowId, colId, isActive )
+        this.setState({
+          isDown:true
+        })
+      }
     }
-  }
 
   }
 
@@ -56,9 +56,7 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
     let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
 
     if(this.state.isDown){
-      //let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
       this.props.updateGrid(rowId, colId, true )
-
     }
   
   }
@@ -84,7 +82,6 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
     this.props.spriteData(result)
     this.props.spriteDataURL(this.canvas.getStage().toDataURL())
     
-
   }
 
   renderCanvas(){
@@ -114,23 +111,22 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
         <Form>
          <FormGroup>
           <Row>
-          <Col xs="6" sm="4">
-            <Label for="tileName">Tile Name</Label>
-            <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
-          </Col>
-          <Col xs="6" sm="4">
-            <Label for="tileName">Author Name</Label>
-            <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
-          </Col>
-          <Col xs="6" sm="4">
-            <Label for="tileName">Tags</Label>
-            <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
-          </Col>
+            <Col xs="6" sm="4">
+              <Label for="tileName">Tile Name</Label>
+              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+            </Col>
+            <Col xs="6" sm="4">
+              <Label for="tileName">Author Name</Label>
+              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+            </Col>
+            <Col xs="6" sm="4">
+              <Label for="tileName">Tags</Label>
+              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+            </Col>
           </Row>
         </FormGroup>
           <Row>
-            <Col xs="6" sm="4"><Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} />
-            </Col>
+            <Col xs="6" sm="4"><Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} /></Col>
             <Col xs="6" sm="4">
                <Stage ref={el => this.canvas = el} width={8} height={8}>
                   <Layer>
@@ -139,6 +135,7 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
                </Stage>
             </Col>
             <Col xs="6" sm="4">
+              <div style={{width:128, height:128, background:`url(${this.props.sprite_data_url})`}}></div>
               <p>{/*this.props.sprite_data*/}</p>
             </Col>
           </Row>
