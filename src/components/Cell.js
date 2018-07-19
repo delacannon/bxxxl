@@ -1,12 +1,9 @@
 import React, {Component} from 'react'
 
 class Cell extends Component {
-  constructor(props){
-    super(props)
-  }
-  
-  render(){
-
+ 
+   render(){
+      console.log(this.props)
       var divStyle = null,
           classes = this.props.active? 'checked grid' : 'grid';
       
@@ -16,7 +13,9 @@ class Cell extends Component {
   
       return (
         <div style={divStyle} 
-          onClick={this.props.onClick.bind(null, this.props.rowId, this.props.columnId )} 
+          onMouseDown={this.props.onMouseDown.bind(null, this.props.rowId, this.props.columnId )} 
+          onMouseMove={this.props.onMouseMove.bind(null, this.props.rowId, this.props.columnId )}
+          onMouseUp={this.props.onMouseUp.bind()}
           className={classes} 
           id={this.props.columnId}>
         </div>

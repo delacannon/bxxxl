@@ -3,9 +3,9 @@
   border:1px solid black;
 }
 
-.sequencer {
+.TilesCanvas {
   display: block;
-  width: 700px;
+  width: 244px;
   float: left;
   border:1px solid black;
 }
@@ -15,7 +15,7 @@
 }
 
 .gridRow div:first-child {
-  width: 150px;
+  width: 0px;
   display: table-cell;
   vertical-align: middle;
   text-transform: capitalize;
@@ -27,12 +27,13 @@
   background: #ffffff;
   width: 30px;
   height: 30px;
-  border:1px solid #f0f0f0;
+  border:1px solid #f6f6f6;
   cursor: pointer;
 }
 
 .grid:hover {
   background: #999;
+  border:1px solid #222;
 }
 
 .checked {

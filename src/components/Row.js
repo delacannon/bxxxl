@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import Cell from './Cell'
-import _ from 'lodash'
 
 class Row extends Component {
-  constructor(props){
-    super(props)
-
-    console.log('row', this.props.row['grids'])
-
-
-  }
   
   render(){
       
@@ -18,7 +10,9 @@ class Row extends Component {
       return (
             <Cell key={column['id']} 
                   active={column['active']} 
-                  onClick={this.props.onClick}
+                  onMouseDown={this.props.onMouseDown}
+                  onMouseMove={this.props.onMouseMove}
+                  onMouseUp={this.props.onMouseUp} 
                   columnId={column['id']} 
                   rowId={this.props.row['id']}
             />

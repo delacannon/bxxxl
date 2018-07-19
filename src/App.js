@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash'
-import Immutable from 'immutable'
 
 import { addGrid, updateGrid, spriteData } from "./actions";
 import { connect } from "react-redux"
 
-import Sequencer from './components/Sequencer'
+import Tiles from './components/Tiles'
 
-const grid_items= [
-  '', '', '', '',
-  '', '', '', ''
-];
+const grid_items= ['', '', '', '','', '', '', ''];
 
 var grid =  _.map(grid_items, (title, index) => {
   return {id: index, title: title, grids: _.map(_.range(8), index => {
@@ -23,14 +19,37 @@ class App extends Component {
 
   constructor(props){
     super(props)
+    this.state = {
+      isDown: false
+    }
+  }
+
+  onMouseDown(rowId, colId) {
+
+    if(!this.state.isDown){
+      let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
+      this.props.updateGrid(rowId, colId, isActive )
+      this.setState({
+        isDown:true
+      })
+    }
 
   }
 
-  onClick(rowId, colId) {
+  onMouseUp(){
 
-    let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
-    this.props.updateGrid(rowId, colId, isActive )
+    this.setState({
+      isDown:false
+    })
 
+  }
+
+  onMouseMove(rowId, colId){
+    //let isActive = !this.props.grid[rowId].grids[colId].active ? true : false
+    if(this.state.isDown){
+      this.props.updateGrid(rowId, colId, true )
+    }
+  
   }
 
   componentDidMount(){
@@ -40,7 +59,7 @@ class App extends Component {
   }
 
   componentDidUpdate(){
-    
+  
     var m = this.props.grid
     var result = ''
 
@@ -52,13 +71,14 @@ class App extends Component {
     })
 
     this.props.spriteData(result)
+   
 
   }
   
   render() {
     return (
       <div>
-        {this.props.grid!=null && <Sequencer onClick={this.onClick.bind(this)} />}
+        {this.props.grid!=null && <Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} />}
         {this.props.sprite_data}
      </div>
     );
