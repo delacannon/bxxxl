@@ -6,6 +6,7 @@ class Cell extends Component {
   }
   
   render(){
+
       var divStyle = null,
           classes = this.props.active? 'checked grid' : 'grid';
       
@@ -17,7 +18,7 @@ class Cell extends Component {
         <div style={divStyle} 
           onClick={this.props.onClick.bind(null, this.props.rowId, this.props.columnId )} 
           className={classes} 
-          id={this.props.columnId}>&nbsp;
+          id={this.props.columnId}>
         </div>
       );
   }
