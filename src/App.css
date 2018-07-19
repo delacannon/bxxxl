@@ -1,3 +1,4 @@
+*,html,body{margin:0; padding:0;}
 #appContainer {
 
   border:1px solid black;
@@ -5,9 +6,11 @@
 
 .TilesCanvas {
   display: block;
-  width: 244px;
-  float: left;
-  border:1px solid black;
+  width: 248px;
+  height:248px;
+  border:2px solid #333;
+  padding:1px;
+  margin:0 auto;
 }
 
 .gridRow {

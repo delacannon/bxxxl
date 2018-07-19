@@ -3,9 +3,12 @@ import _ from 'lodash'
 import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
-import {Container, Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {Container, Row, ButtonGroup,Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
+
+import header from './header.jpg'
+
 
 class App extends Component {
 
@@ -101,49 +104,94 @@ class App extends Component {
     })
 
   }
+
+  renderData(){
+
+    var a = this.props.sprite_data
+    var m= _.chunk(a,8)
+
+    return m.map((e,i) => {
+       return <span style={{fontSize:'1.4em'}}>{e.join("")}{(i%8==0) ? <br/> : <br/>}</span>
+    })
+
+
+  }
   
   render() {
 
     return (
-      <div>
-      <Container>
+  
+      <Container fluid>
+        <Row>
+            <Col xs="12" sm="12">
+             <div style={{height:380, background:`black`, backgroundSize:'cover'}}>
+             </div>
+            </Col>
+        </Row>
+        <hr />
+        <h3>Create Patterns</h3>
+        <hr />
         {this.props.grid!=null && 
         <Form>
          <FormGroup>
           <Row>
-            <Col xs="6" sm="4">
-              <Label for="tileName">Tile Name</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+            <Col xs="12" sm="4">
+              <Label for="tileName">Pattern Name</Label>
+              <Input type="text" name="tileName" id="tileName" placeholder="Pattern" />
             </Col>
-            <Col xs="6" sm="4">
+            <Col xs="12" sm="4">
               <Label for="tileName">Author Name</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+              <Input type="text" name="tileName" id="tileName" placeholder="Author" />
             </Col>
-            <Col xs="6" sm="4">
+            <Col xs="12" sm="4">
               <Label for="tileName">Tags</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Enter tile name" />
+              <Input type="text" name="tileName" id="tileName" placeholder="Enter tags separated by comas" />
             </Col>
           </Row>
         </FormGroup>
-          <Row>
-            <Col xs="6" sm="4"><Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} /></Col>
-            <Col xs="6" sm="4">
-               <Stage ref={el => this.canvas = el} width={8} height={8}>
-                  <Layer>
-                     {this.renderCanvas()}
-                  </Layer>
-               </Stage>
+        <FormGroup>
+          <Row style={{border:'2px #000 solid'}} >
+            <Col xs="12" sm="4" style={{background:'#000', height:248}}>
+            <Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} /></Col>
+            
+            <Col xs="12" sm="4"  style={{background:'#fff', height:248}}>
+              <div style={{width:80, height:80, zoom:3, display:'block',
+              margin:'1px auto',imageRendering:'pixelated', background:`url(${this.props.sprite_data_url})`}}></div>
             </Col>
-            <Col xs="6" sm="4">
-              <div style={{width:128, height:128, background:`url(${this.props.sprite_data_url})`}}></div>
-              <p>{/*this.props.sprite_data*/}</p>
+            <Col  xs="12" sm="4" style={{background:'#000', height:248, color:'white', 
+              fontFamily:'monospace',textAlign:'center'}}>
+               {this.renderData()}
             </Col>
           </Row>
+          </FormGroup>
+          <FormGroup>
+              <Row >
+              <Col sm="12" md={{ size: 8, offset: 2 }} lg={{ size: 6, offset: 4}}>
+              <ButtonGroup >
+              <Button size='lg' disabled style={{background:'black'}}>Save Pattern</Button>
+              <Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
+              <Button size='lg' style={{background:'black'}}>Download Pattern</Button>
+             </ButtonGroup>
+            </Col>
+            </Row>
+          </FormGroup>
         </Form>
+
       }
-        
+      <hr />
+      <h3>Collective Patterns</h3>
+      <hr/>
+         <Stage style={{display:'none'}} ref={el => this.canvas = el} width={8} height={8}>
+          <Layer>
+              {this.renderCanvas()}
+          </Layer>
+        </Stage>
         </Container>
-     </div>
+
+
+
+     
+   
     );
   }
 
