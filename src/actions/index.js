@@ -1,4 +1,4 @@
-import { ADD_GRID, UPDATE_GRID, SPRITE_DATA } from './types'
+import { ADD_GRID, UPDATE_GRID, SPRITE_DATA,SPRITE_DATA_URL } from './types'
 
 
 
@@ -7,6 +7,15 @@ export const addGrid = grid => dispatch => {
 	dispatch({
 		type: ADD_GRID,
 		payload: grid
+	})
+
+}
+
+export const spriteDataURL= image => dispatch => {
+
+	dispatch({
+		type: SPRITE_DATA_URL,
+		payload: image
 	})
 
 }

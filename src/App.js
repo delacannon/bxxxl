@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import _ from 'lodash'
-import { addGrid, updateGrid, spriteData } from "./actions";
+import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
 import {Container, Row, Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import { Stage, Layer, Rect, Text } from 'react-konva';
+import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 
 class App extends Component {
@@ -12,7 +12,8 @@ class App extends Component {
   constructor(props){
     super(props)
     this.state = {
-      isDown: false
+      isDown: false,
+      image:null
     }
 
     let number = 8
@@ -81,7 +82,8 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
     })
 
     this.props.spriteData(result)
-
+    this.props.spriteDataURL(this.canvas.getStage().toDataURL())
+    
 
   }
 
@@ -93,7 +95,8 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
        return _.map(_.range(8), j => {
             let a = _.pick(data.grids[j],['active']);
               if(a['active']){ 
-                return <Rect fill={'black'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/> 
+                return <Rect fill={'black'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/>
+                  
               }else{
                 return <Rect fill={'white'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/>
               }
@@ -103,6 +106,7 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
   }
   
   render() {
+
     return (
       <div>
       <Container>
@@ -128,10 +132,10 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
             <Col xs="6" sm="4"><Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} />
             </Col>
             <Col xs="6" sm="4">
-               <Stage width={64} height={64} scaleX={4} scaleY={4}>
-                <Layer>
-                   {this.renderCanvas()}
-                </Layer>
+               <Stage ref={el => this.canvas = el} width={8} height={8}>
+                  <Layer>
+                     {this.renderCanvas()}
+                  </Layer>
                </Stage>
             </Col>
             <Col xs="6" sm="4">
@@ -149,9 +153,10 @@ if(e.nativeEvent.which === 1 || e.type==='click'){
 }
 
 
-const mapStateToProps = ({ grid, sprite_data }) => ({ 
+const mapStateToProps = ({ grid, sprite_data, sprite_data_url }) => ({ 
       grid: grid.grid,
-      sprite_data: sprite_data.sprite_data
+      sprite_data: sprite_data.sprite_data,
+      sprite_data_url: sprite_data_url.sprite_data_url
     });
 
-export default connect(mapStateToProps, {addGrid, updateGrid, spriteData })(App);
+export default connect(mapStateToProps, {addGrid, updateGrid, spriteData, spriteDataURL })(App);

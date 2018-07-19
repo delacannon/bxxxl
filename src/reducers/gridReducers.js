@@ -1,15 +1,20 @@
-import { ADD_GRID, UPDATE_GRID, SPRITE_DATA } from "../actions/types";
+import { ADD_GRID, UPDATE_GRID, SPRITE_DATA, SPRITE_DATA_URL } from "../actions/types";
 import update from 'immutability-helper'
 
 const initialState = {
 	grid:[],
-  sprite_data:''
+  sprite_data:'',
+  sprite_data_url:null
+
 }
 
 const StoryReducer = (state = initialState, action) => {
 
   switch (action.type) {
     
+    case SPRITE_DATA_URL:
+    return {...state, sprite_data_url: action.payload }
+
     case SPRITE_DATA:
     return {...state, sprite_data: action.data }
 
