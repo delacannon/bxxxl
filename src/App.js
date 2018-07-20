@@ -3,9 +3,11 @@ import _ from 'lodash'
 import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
+
 import {CardImg, CardTitle, CardText, CardDeck, Card,CardColumns,
  CardSubtitle, CardBody, Container, Row, ButtonGroup, CardFooter,
  Col, Button, Form, FormGroup, Label, Input, FormText,Fade } from 'reactstrap';
+
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 
@@ -15,15 +17,16 @@ import header from './header.jpg'
 
 
 var style = {
-  NotificationItem: { // Override the notification item
-    DefaultStyle: { // Applied to every notification, regardless of the notification level
+  NotificationItem: { 
+    DefaultStyle: { 
       margin: '10px',
       fontSize:'1.2em'
     },
 
-    success: { // Applied only to the success notification item
+    success: { 
       color: 'white',
-      background:'black'
+      background:'black',
+      border:'4px solid white'
     }
   }
 }
@@ -97,7 +100,7 @@ class App extends Component {
     var self = this;
     fetch(url, { method, body })
           .then(res => {
-              self.addNotification('Card name')
+              self.addNotification(self.state.name)
               console.log('...saved!')
     })
     }else{
