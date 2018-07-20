@@ -38,7 +38,6 @@ class App extends Component {
     super(props)
     this.state = {
       isDown: false,
-      image:null,
       name:'',
       tags:'',
       gss:[]
@@ -103,9 +102,10 @@ class App extends Component {
           .then(res => {
               self.addNotification(`🙌 New Pattern Added, ${self.state.name}!`,true)
               console.log(`${self.state.name} ...saved!`)
+              self.resetPattern()
     })
     }else{
-       self.addNotification(`🙏 Enter a name and tags for the designed pattern.`,false)
+       this.addNotification(`🙏 Enter a name and tags for the designed pattern.`,false)
     }
     
   }
@@ -138,8 +138,8 @@ class App extends Component {
         this.setState({
           gss:data.feed.entry
       })
-    })
 
+    })
     this.props.addGrid(this.grid)
     this.ns = this.refs.notificationSystem;
 
@@ -165,17 +165,15 @@ class App extends Component {
 
   renderCards(){
 
-   var gss = _.reverse(this.state.gss);
-
-   return gss.map( entry => {
+   return this.state.gss.map( entry => {
     return (
         <Card className='mb-4'>
           <CardImg top width="100%" src={entry.gsx$image.$t} alt={entry.gsx$name.$t} style={{imageRendering:'pixelated'}} />
           <CardBody>
-            <CardTitle>{entry.gsx$name.$t}</CardTitle>
-            <CardSubtitle>{entry.gsx$tags.$t}</CardSubtitle>
+            <CardTitle  style={{fontSize:'14px'}}>{entry.gsx$name.$t}</CardTitle>
+            <CardSubtitle style={{fontSize:'10px'}}>{entry.gsx$tags.$t}</CardSubtitle>
             <CardText>
-               <div style={{width:'100%', height:'64px', zoom:3, display:'block',
+               <div style={{width:'100%', height:'32px', zoom:3, display:'block',
               margin:'1px auto',imageRendering:'pixelated', background:`url(${entry.gsx$image.$t})`}}></div>
             </CardText>
           </CardBody>
@@ -214,6 +212,26 @@ class App extends Component {
 
   }
 
+  resetPattern(){
+
+    this.form.reset();
+
+    for(var i=0;i<8;i++){
+      for(var j=0;j<8;j++){
+         this.props.updateGrid(j,i,false)
+      }
+    }
+
+    this.props.spriteData(0)
+    this.props.spriteDataURL('')
+
+    this.setState({
+      name:'',
+      tags:''
+
+    })
+  }
+
   handleChange(e){
 
       this.setState({
@@ -229,8 +247,12 @@ class App extends Component {
     
       <Container fluid>
       <NotificationSystem ref="notificationSystem" style={style} />
-        <Row>
-          <Col style={{height:'300px',backgroundSize:'cover',background:'#000'}}>
+        <Row >
+          <Col style={{height:'300px',
+          background:`url(${this.state.gss.length>1 && this.state.gss[this.state.gss.length-1].gsx$image.$t})`}}>
+          <div style={{background:'white', textAlign:'center', margin:'0 auto',position: '-webkit-sticky',position: 'sticky',top: 0,zIndex:999}}>
+            <h1>BXXXL</h1>
+          </div>
           </Col>
       </Row>
         <hr />
@@ -276,7 +298,7 @@ class App extends Component {
               <Col sm="12">
                 <ButtonGroup >
                 <Button size='lg' className={`${ (this.state.name.length>0 && this.state.tags.length>0) ? '':'disabled'} `} style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
-                <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Reset Pattern</Button>
+                <Button size='lg' style={{background:'black'}} onClick={() => this.resetPattern()}>Reset Pattern</Button>
                 {/*<Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
                 <Button size='lg' style={{background:'black'}}>Download Pattern</Button>*/}
                </ButtonGroup>
@@ -287,20 +309,17 @@ class App extends Component {
       }
       <div>
        <Row>
-          <Col style={{height:'200px',backgroundSize:'cover',background:'#000'}}>
+          <Col style={{overflow:'hidden',height:'200px', background:`url(${this.state.gss.length>1 && this.state.gss[this.state.gss.length-2].gsx$image.$t})`}}>
           </Col>
       </Row>
         <hr/>
           <h3 style={{textAlign:'center'}}>Patterns List</h3>
         <hr/>
       </div>
-       <Row>
-        <Col xs="12" sm="12" lg="12">
         <CardColumns className="columns">
              {(this.state.gss!=null && this.state.gss.length!=0) && this.renderCards()}
           </CardColumns>
-        </Col>
-      </Row>
+
          <Stage style={{display:'none'}} ref={el => this.canvas = el} width={8} height={8}>
           <Layer>
               {this.renderCanvas()}
