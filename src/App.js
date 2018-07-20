@@ -55,10 +55,10 @@ class App extends Component {
 
   }
 
-  addNotification(id){
+  addNotification(text, sendable){
       var self = this;
       this.ns.addNotification({
-        message: `🙌 New Pattern Added, ${id}!`,
+        message: `${text}`,
         level: 'success',
         autoDismiss:2,
         onRemove:function () { 
@@ -68,6 +68,7 @@ class App extends Component {
          }
       });
 
+      if(sendable){}
       fetch("https://spreadsheets.google.com/feeds/list/1K7eINSHdez459GW6XfEfKC4PaNa7hLePh-IrWc-DKm8/od6/public/values?alt=json")
       .then(res => res.json())
       .then(data =>{
@@ -100,11 +101,11 @@ class App extends Component {
     var self = this;
     fetch(url, { method, body })
           .then(res => {
-              self.addNotification(self.state.name)
-              console.log('...saved!')
+              self.addNotification(`🙌 New Pattern Added, ${self.state.name}!`,true)
+              console.log(`${self.state.name} ...saved!`)
     })
     }else{
-      alert("Add a name and tags")
+       self.addNotification(`🙏 Enter a name and tags for the designed pattern.`,false)
     }
     
   }
@@ -131,7 +132,7 @@ class App extends Component {
 
   componentDidMount(){
 
-  fetch("https://spreadsheets.google.com/feeds/list/1K7eINSHdez459GW6XfEfKC4PaNa7hLePh-IrWc-DKm8/od6/public/values?alt=json")
+    fetch("https://spreadsheets.google.com/feeds/list/1K7eINSHdez459GW6XfEfKC4PaNa7hLePh-IrWc-DKm8/od6/public/values?alt=json")
       .then(res => res.json())
       .then(data =>{
         this.setState({
@@ -139,9 +140,8 @@ class App extends Component {
       })
     })
 
-   this.props.addGrid(this.grid)
-
-   this.ns = this.refs.notificationSystem;
+    this.props.addGrid(this.grid)
+    this.ns = this.refs.notificationSystem;
 
   }
 
@@ -156,8 +156,6 @@ class App extends Component {
             (a['active']) ? result+=1 : result+=0;
          })
     })
-
-    console.log()
 
     this.props.spriteData(result)
     this.props.spriteDataURL(this.canvas.getStage().toDataURL())
@@ -211,7 +209,7 @@ class App extends Component {
 
     var a = this.props.sprite_data
     var m= _.chunk(a,8)
-    console.log(a)
+
     return m.map((e,i) => {
        return <span style={{fontSize:'1.4em'}}>{e.join("")}{(i%8===0) ? <br/> : <br/>}</span>
     })
