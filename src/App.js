@@ -121,15 +121,15 @@ class App extends Component {
           <CardBody>
             <CardTitle>{entry.gsx$name.$t}</CardTitle>
             <CardSubtitle>{entry.gsx$tags.$t}</CardSubtitle>
-            <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</CardText>
-            <Button>Button</Button>
+            <CardText>
+               <div style={{width:80, height:80, zoom:3, display:'block',
+              margin:'1px auto',imageRendering:'pixelated', background:`url(${entry.gsx$image.$t})`}}></div>
+            </CardText>
           </CardBody>
         </Card>
       )
 
     })
-
-   
 
   }
 
@@ -142,7 +142,6 @@ class App extends Component {
             let a = _.pick(data.grids[j],['active']);
               if(a['active']){ 
                 return <Rect fill={'black'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/>
-                  
               }else{
                 return <Rect fill={'white'} x={j} y={i} width={1} height={1} scaleX={1} scaleY={1}/>
               }
@@ -173,7 +172,7 @@ class App extends Component {
 
     return (
   
-      <Container>
+      <Container fluid>
         <Row>
             <Col xs="12" sm="12">
              <div style={{height:380, background:`black`, backgroundSize:'cover'}}>
