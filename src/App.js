@@ -165,9 +165,9 @@ class App extends Component {
 
   renderCards(){
 
+   var gss = _.reverse(this.state.gss);
 
-
-   return this.state.gss.map( entry => {
+   return gss.map( entry => {
     return (
         <Card className='mb-4'>
           <CardImg top width="100%" src={entry.gsx$image.$t} alt={entry.gsx$name.$t} style={{imageRendering:'pixelated'}} />
@@ -182,9 +182,7 @@ class App extends Component {
           <CardFooter><a href="#" style={{color:'black'}}>Get Data</a></CardFooter>
         </Card>
       )
-
     })
-
 
   }
 
