@@ -44,10 +44,50 @@ class App extends Component {
 
   }
 
+  handleExportClick = () => {
+    
+   /* 
+    this.setState({uploaded:true})
+    const image = this.stageRef.getStage().toDataURL('image/png')   
+      cloudinary.v2.uploader.upload(image, (error, result) => {
+
+      if(result){
+          this.setState({
+                  endURL:result.secure_url,
+                  imgID:result.public_id
+                 })
+                     const url = "https://script.google.com/macros/s/AKfycbx-3a4ff8cTD75AJxZQyQr3Wn08CInKG8g3V8LF-oxpB6SCuUg/exec"
+                     const method = "POST";
+                 const body = new FormData(this.form)
+
+                 fetch(url, { method, body })
+                    .then(res => {
+                      this.setState({
+                        uploaded:false
+                      })
+                  this.addNotification()
+            })
+          }               
+     })
+    */
+
+    const url = "https://script.google.com/macros/s/AKfycbxl1Fh84h24QCOtAczh4GB4X4qKBIXo8gsr7kZ82CJ48wBnfn8/exec"
+    const method = "POST";
+    const fd = new FormData(this.form)
+
+    fetch(url, { method:"POST", body:fd })
+          .then(res => {
+              console.log(res)
+    })
+    
+  }
+
+
   onMouseUp(){
 
     this.setState({
-      isDown:false
+      isDown:false,
+      name:''
     })
 
   }
@@ -116,6 +156,12 @@ class App extends Component {
 
 
   }
+
+  handleChange(e){
+      this.setState({
+        name:e.target.name=="name" ? e.target.value : this.state.name
+      })
+  }
   
   render() {
 
@@ -132,28 +178,29 @@ class App extends Component {
         <h3>Create Patterns</h3>
         <hr />
         {this.props.grid!=null && 
-        <Form>
+        <Form name="my-form" innerRef={el => this.form = el}>
          <FormGroup>
           <Row>
             <Col xs="12" sm="4">
-              <Label for="tileName">Pattern Name</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Pattern" />
+              <Label for="tileName1">Pattern Name</Label>
+              <Input type="text" name="name" id="tileName1" onChange={this.handleChange.bind(this)}  placeholder="Pattern" />
             </Col>
             <Col xs="12" sm="4">
-              <Label for="tileName">Author Name</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Author" />
+              <Label for="tileName2">Author Name</Label>
+              <Input type="text" name="author" id="tileName2" placeholder="Author" />
             </Col>
             <Col xs="12" sm="4">
-              <Label for="tileName">Tags</Label>
-              <Input type="text" name="tileName" id="tileName" placeholder="Enter tags separated by comas" />
+              <Label for="tileName3">Tags</Label>
+              <Input type="text" name="tags" id="tileName3" placeholder="Enter tags separated by comas" />
             </Col>
+            <Input type="hidden" name="data" value={this.props.sprite_data}/>
+            <Input type="hidden" name="image" value={this.props.sprite_data_url}/>
           </Row>
         </FormGroup>
         <FormGroup>
           <Row style={{border:'2px #000 solid'}} >
             <Col xs="12" sm="4" style={{background:'#000', height:248}}>
             <Tiles onMouseUp={this.onMouseUp.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseDown={this.onMouseDown.bind(this)} /></Col>
-            
             <Col xs="12" sm="4"  style={{background:'#fff', height:248}}>
               <div style={{width:80, height:80, zoom:3, display:'block',
               margin:'1px auto',imageRendering:'pixelated', background:`url(${this.props.sprite_data_url})`}}></div>
@@ -168,7 +215,7 @@ class App extends Component {
               <Row >
               <Col sm="12" md={{ size: 8, offset: 2 }} lg={{ size: 6, offset: 4}}>
               <ButtonGroup >
-              <Button size='lg' disabled style={{background:'black'}}>Save Pattern</Button>
+              <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
               <Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
               <Button size='lg' style={{background:'black'}}>Download Pattern</Button>
              </ButtonGroup>
@@ -187,10 +234,6 @@ class App extends Component {
           </Layer>
         </Stage>
         </Container>
-
-
-
-     
    
     );
   }

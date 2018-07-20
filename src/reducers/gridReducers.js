@@ -4,7 +4,7 @@ import update from 'immutability-helper'
 const initialState = {
 	grid:[],
   sprite_data:'',
-  sprite_data_url:null
+  sprite_data_url:''
 
 }
 
