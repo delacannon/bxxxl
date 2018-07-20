@@ -13,11 +13,11 @@ class Cell extends Component {
   
       return (
         <div style={divStyle} 
-          onMouseDown={this.props.onMouseDown.bind(null, this.props.rowId, this.props.columnId )} 
-          onMouseMove={this.props.onMouseMove.bind(null, this.props.rowId, this.props.columnId )}
-          onMouseUp={this.props.onMouseUp.bind()}
-          className={classes} 
-          id={this.props.columnId}>
+             onMouseDown={this.props.onMouseDown.bind(null, this.props.rowId, this.props.columnId )} 
+             onMouseMove={this.props.onMouseMove.bind(null, this.props.rowId, this.props.columnId )}
+             onMouseUp={this.props.onMouseUp.bind()}
+             className={classes} 
+             id={this.props.columnId}>
         </div>
       );
   }

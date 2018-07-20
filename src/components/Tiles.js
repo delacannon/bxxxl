@@ -9,10 +9,11 @@ class Tiles extends Component {
 
      var rows = this.props.grid.map(row => {
         return (
-          <Row key={Math.random()*100} row={row} 
-          onMouseDown={this.props.onMouseDown} 
-          onMouseUp={this.props.onMouseUp} 
-          onMouseMove={this.props.onMouseMove} />
+          <Row key={Math.random()*9999} 
+               row={row} 
+               onMouseDown={this.props.onMouseDown} 
+               onMouseUp={this.props.onMouseUp} 
+               onMouseMove={this.props.onMouseMove} />
         );
       })
 

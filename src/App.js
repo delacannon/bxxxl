@@ -4,7 +4,8 @@ import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
 import {CardImg, CardTitle, CardText, CardDeck, Card,
- CardSubtitle, CardBody, Container, Row, ButtonGroup,Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+ CardSubtitle, CardBody, Container, Row, ButtonGroup, 
+ Col, Button, Form, FormGroup, Label, Input, FormText,Fade } from 'reactstrap';
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 
@@ -61,7 +62,6 @@ class App extends Component {
 
 
   onMouseUp(){
-
     this.setState({
       isDown:false
     })
@@ -122,7 +122,7 @@ class App extends Component {
             <CardTitle>{entry.gsx$name.$t}</CardTitle>
             <CardSubtitle>{entry.gsx$tags.$t}</CardSubtitle>
             <CardText>
-               <div style={{width:80, height:80, zoom:3, display:'block',
+               <div style={{width:'100%', height:'64px', zoom:3, display:'block',
               margin:'1px auto',imageRendering:'pixelated', background:`url(${entry.gsx$image.$t})`}}></div>
             </CardText>
           </CardBody>
@@ -159,7 +159,6 @@ class App extends Component {
        return <span style={{fontSize:'1.4em'}}>{e.join("")}{(i%8==0) ? <br/> : <br/>}</span>
     })
 
-
   }
 
   handleChange(e){
@@ -174,31 +173,29 @@ class App extends Component {
   
       <Container fluid>
         <Row>
-            <Col xs="12" sm="12">
-             <div style={{height:380, background:`black`, backgroundSize:'cover'}}>
-             </div>
-            </Col>
-        </Row>
+          <Col style={{height:'600px',backgroundSize:'cover',background:'#000'}}>
+          </Col>
+      </Row>
         <hr />
         <h3>Create Patterns</h3>
         <hr />
         {this.props.grid!=null && 
         <Form name="my-form" innerRef={el => this.form = el}>
-         <FormGroup>
+         <FormGroup> 
           <Row>
             <Col xs="12" sm="4">
               <Label for="tileName1">Pattern Name</Label>
               <Input type="text" name="name" id="tileName1" onChange={this.handleChange.bind(this)}  placeholder="Pattern" />
             </Col>
             <Col xs="12" sm="4">
-              <Label for="tileName2">Author Name</Label>
-              <Input type="text" name="author" id="tileName2" placeholder="Author" />
+              <Label for="authorName">Author Name</Label>
+              <Input type="text" name="author" id="authorName" placeholder="Author" />
             </Col>
             <Col xs="12" sm="4">
-              <Label for="tileName3">Tags</Label>
-              <Input type="text" name="tags" id="tileName3" placeholder="Enter tags separated by comas" />
+              <Label for="tagNames">Tags</Label>
+              <Input type="text" name="tags" id="tagNames" placeholder="Enter tags separated by comas" />
             </Col>
-            <Input type="hidden" name="data" value={this.props.sprite_data}/>
+            <Input type="hidden" name="data"  value={this.props.sprite_data}/>
             <Input type="hidden" name="image" value={this.props.sprite_data_url}/>
           </Row>
         </FormGroup>
@@ -217,24 +214,28 @@ class App extends Component {
           </Row>
           </FormGroup>
           <FormGroup>
-              <Row >
+            <Row >
               <Col sm="12" md={{ size: 8, offset: 2 }} lg={{ size: 6, offset: 4}}>
-              <ButtonGroup >
-              <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
-              <Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
-              <Button size='lg' style={{background:'black'}}>Download Pattern</Button>
-             </ButtonGroup>
-            </Col>
+                <ButtonGroup >
+                <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
+                {/*<Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
+                <Button size='lg' style={{background:'black'}}>Download Pattern</Button>*/}
+               </ButtonGroup>
+              </Col>
             </Row>
           </FormGroup>
         </Form>
       }
       <hr />
-      <h3>Collective Patterns</h3>
+      <h3>Patterns List</h3>
       <hr/>
-      <CardDeck>
-        {this.renderCards()}
-      </CardDeck>
+       <Row>
+        <Col xs="12" sm="12" lg="12">
+          <CardDeck>
+            {this.renderCards()}
+          </CardDeck>
+        </Col>
+      </Row>
          <Stage style={{display:'none'}} ref={el => this.canvas = el} width={8} height={8}>
           <Layer>
               {this.renderCanvas()}
@@ -245,9 +246,7 @@ class App extends Component {
    
     );
   }
-
 }
-
 
 const mapStateToProps = ({ grid, sprite_data, sprite_data_url }) => ({ 
       grid: grid.grid,
