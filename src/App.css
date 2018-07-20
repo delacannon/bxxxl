@@ -43,3 +43,10 @@
 .checked {
   background: #000;
 }
+
+
+@media (max-width: 4048px) and  (min-width: 768px)  {
+  .columns {
+  column-count: 4;
+  }
+}

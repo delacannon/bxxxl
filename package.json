@@ -13,6 +13,7 @@
     "react-dom": "^16.4.1",
     "react-grid-layout": "^0.16.6",
     "react-konva": "^1.7.12",
+    "react-notification-system": "^0.2.17",
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.4",
     "reactstrap": "^6.3.0",

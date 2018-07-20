@@ -3,13 +3,30 @@ import _ from 'lodash'
 import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
-import {CardImg, CardTitle, CardText, CardDeck, Card,
- CardSubtitle, CardBody, Container, Row, ButtonGroup, 
+import {CardImg, CardTitle, CardText, CardDeck, Card,CardColumns,
+ CardSubtitle, CardBody, Container, Row, ButtonGroup, CardFooter,
  Col, Button, Form, FormGroup, Label, Input, FormText,Fade } from 'reactstrap';
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 
+import NotificationSystem from 'react-notification-system'
+
 import header from './header.jpg'
+
+
+var style = {
+  NotificationItem: { // Override the notification item
+    DefaultStyle: { // Applied to every notification, regardless of the notification level
+      margin: '10px',
+      fontSize:'1.2em'
+    },
+
+    success: { // Applied only to the success notification item
+      color: 'white',
+      background:'black'
+    }
+  }
+}
 
 
 class App extends Component {
@@ -19,9 +36,11 @@ class App extends Component {
     this.state = {
       isDown: false,
       image:null,
+      name:'',
+      tags:'',
       gss:[]
     }
-
+    this.ns = null
     let number = 8
     this.grid_items = _.range(number)
 
@@ -31,6 +50,28 @@ class App extends Component {
       })}
     });
 
+  }
+
+  addNotification(id){
+      var self = this;
+      this.ns.addNotification({
+        message: `🙌 New Pattern Added, ${id}!`,
+        level: 'success',
+        autoDismiss:2,
+        onRemove:function () { 
+              self.setState({
+                loadingCard:false
+              })
+         }
+      });
+
+      fetch("https://spreadsheets.google.com/feeds/list/1K7eINSHdez459GW6XfEfKC4PaNa7hLePh-IrWc-DKm8/od6/public/values?alt=json")
+      .then(res => res.json())
+      .then(data =>{
+        this.setState({
+          gss:data.feed.entry
+      })
+    })
   }
 
   onMouseDown(rowId, colId,e) {
@@ -49,14 +90,19 @@ class App extends Component {
 
   handleExportClick = () => {
     
+    if(this.state.name.length>0 && this.state.tags.length>0){
     const url = "https://script.google.com/macros/s/AKfycbxl1Fh84h24QCOtAczh4GB4X4qKBIXo8gsr7kZ82CJ48wBnfn8/exec"
     const method = "POST";
     const body = new FormData(this.form)
-
+    var self = this;
     fetch(url, { method, body })
           .then(res => {
+              self.addNotification('Card name')
               console.log('...saved!')
     })
+    }else{
+      alert("Add a name and tags")
+    }
     
   }
 
@@ -92,6 +138,8 @@ class App extends Component {
 
    this.props.addGrid(this.grid)
 
+   this.ns = this.refs.notificationSystem;
+
   }
 
   componentDidUpdate(){
@@ -99,24 +147,28 @@ class App extends Component {
     var m = this.props.grid
     var result = ''
 
-    m.map( ( data, i) => {
+    m.map(( data, i) => {
       _.map(_.range(8), i => {
             let a = _.pick(data.grids[i],['active']);
-              (a['active']) ? result+=1 : result+=0;
+            (a['active']) ? result+=1 : result+=0;
          })
     })
 
+    console.log()
+
     this.props.spriteData(result)
     this.props.spriteDataURL(this.canvas.getStage().toDataURL())
-    
+
   }
 
 
   renderCards(){
 
+
+
    return this.state.gss.map( entry => {
     return (
-        <Card>
+        <Card className='mb-4'>
           <CardImg top width="100%" src={entry.gsx$image.$t} alt={entry.gsx$name.$t} style={{imageRendering:'pixelated'}} />
           <CardBody>
             <CardTitle>{entry.gsx$name.$t}</CardTitle>
@@ -126,10 +178,12 @@ class App extends Component {
               margin:'1px auto',imageRendering:'pixelated', background:`url(${entry.gsx$image.$t})`}}></div>
             </CardText>
           </CardBody>
+          <CardFooter><a href="#" style={{color:'black'}}>Get Data</a></CardFooter>
         </Card>
       )
 
     })
+
 
   }
 
@@ -154,30 +208,34 @@ class App extends Component {
 
     var a = this.props.sprite_data
     var m= _.chunk(a,8)
-
+    console.log(a)
     return m.map((e,i) => {
-       return <span style={{fontSize:'1.4em'}}>{e.join("")}{(i%8==0) ? <br/> : <br/>}</span>
+       return <span style={{fontSize:'1.4em'}}>{e.join("")}{(i%8===0) ? <br/> : <br/>}</span>
     })
 
   }
 
   handleChange(e){
+
       this.setState({
-        name:e.target.name=="name" ? e.target.value : this.state.name
+        name:e.target.name==="name" ? e.target.value : this.state.name,
+        tags:e.target.name==="tags" ? e.target.value : this.state.tags
       })
+
   }
   
   render() {
 
     return (
-  
+    
       <Container fluid>
+      <NotificationSystem ref="notificationSystem" style={style} />
         <Row>
-          <Col style={{height:'600px',backgroundSize:'cover',background:'#000'}}>
+          <Col style={{height:'300px',backgroundSize:'cover',background:'#000'}}>
           </Col>
       </Row>
         <hr />
-        <h3>Create Patterns</h3>
+        <h3 style={{textAlign:'center'}}>Pattern Editor</h3>
         <hr />
         {this.props.grid!=null && 
         <Form name="my-form" innerRef={el => this.form = el}>
@@ -193,7 +251,8 @@ class App extends Component {
             </Col>
             <Col xs="12" sm="4">
               <Label for="tagNames">Tags</Label>
-              <Input type="text" name="tags" id="tagNames" placeholder="Enter tags separated by comas" />
+              <Input type="text" name="tags" id="tagNames" onChange={this.handleChange.bind(this)}  
+                     placeholder="Enter tags separated by comas" />
             </Col>
             <Input type="hidden" name="data"  value={this.props.sprite_data}/>
             <Input type="hidden" name="image" value={this.props.sprite_data_url}/>
@@ -207,17 +266,18 @@ class App extends Component {
               <div style={{width:80, height:80, zoom:3, display:'block',
               margin:'1px auto',imageRendering:'pixelated', background:`url(${this.props.sprite_data_url})`}}></div>
             </Col>
-            <Col  xs="12" sm="4" style={{background:'#000', height:248, color:'white', 
+            <Col xs="12" sm="4" style={{background:'#000', height:248, color:'white', 
               fontFamily:'monospace',textAlign:'center'}}>
-               {this.renderData()}
+               <br/>{this.renderData()}
             </Col>
           </Row>
           </FormGroup>
           <FormGroup>
             <Row >
-              <Col sm="12" md={{ size: 8, offset: 2 }} lg={{ size: 6, offset: 4}}>
+              <Col sm="12">
                 <ButtonGroup >
-                <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
+                <Button size='lg' className={`${ (this.state.name.length>0 && this.state.tags.length>0) ? '':'disabled'} `} style={{background:'black'}} onClick={() => this.handleExportClick()}>Save Pattern</Button>
+                <Button size='lg' style={{background:'black'}} onClick={() => this.handleExportClick()}>Reset Pattern</Button>
                 {/*<Button size='lg' style={{background:'black'}}>Clipboard Data</Button>
                 <Button size='lg' style={{background:'black'}}>Download Pattern</Button>*/}
                </ButtonGroup>
@@ -226,14 +286,20 @@ class App extends Component {
           </FormGroup>
         </Form>
       }
-      <hr />
-      <h3>Patterns List</h3>
-      <hr/>
+      <div>
+       <Row>
+          <Col style={{height:'200px',backgroundSize:'cover',background:'#000'}}>
+          </Col>
+      </Row>
+        <hr/>
+          <h3 style={{textAlign:'center'}}>Patterns List</h3>
+        <hr/>
+      </div>
        <Row>
         <Col xs="12" sm="12" lg="12">
-          <CardDeck>
-            {this.renderCards()}
-          </CardDeck>
+        <CardColumns className="columns">
+             {(this.state.gss!=null && this.state.gss.length!=0) && this.renderCards()}
+          </CardColumns>
         </Col>
       </Row>
          <Stage style={{display:'none'}} ref={el => this.canvas = el} width={8} height={8}>
@@ -241,7 +307,10 @@ class App extends Component {
               {this.renderCanvas()}
           </Layer>
         </Stage>
-      
+         <Row>
+          <Col style={{height:'200px',backgroundSize:'cover',background:'#000'}}>
+          </Col>
+      </Row>
       </Container>
    
     );
