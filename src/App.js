@@ -3,7 +3,8 @@ import _ from 'lodash'
 import { addGrid, updateGrid, spriteData, spriteDataURL } from "./actions";
 import { connect } from "react-redux"
 import Tiles from './components/Tiles'
-import {Container, Row, ButtonGroup,Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import {CardImg, CardTitle, CardText, CardDeck, Card,
+ CardSubtitle, CardBody, Container, Row, ButtonGroup,Col, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 
@@ -16,7 +17,8 @@ class App extends Component {
     super(props)
     this.state = {
       isDown: false,
-      image:null
+      image:null,
+      gss:[]
     }
 
     let number = 8
@@ -46,38 +48,13 @@ class App extends Component {
 
   handleExportClick = () => {
     
-   /* 
-    this.setState({uploaded:true})
-    const image = this.stageRef.getStage().toDataURL('image/png')   
-      cloudinary.v2.uploader.upload(image, (error, result) => {
-
-      if(result){
-          this.setState({
-                  endURL:result.secure_url,
-                  imgID:result.public_id
-                 })
-                     const url = "https://script.google.com/macros/s/AKfycbx-3a4ff8cTD75AJxZQyQr3Wn08CInKG8g3V8LF-oxpB6SCuUg/exec"
-                     const method = "POST";
-                 const body = new FormData(this.form)
-
-                 fetch(url, { method, body })
-                    .then(res => {
-                      this.setState({
-                        uploaded:false
-                      })
-                  this.addNotification()
-            })
-          }               
-     })
-    */
-
     const url = "https://script.google.com/macros/s/AKfycbxl1Fh84h24QCOtAczh4GB4X4qKBIXo8gsr7kZ82CJ48wBnfn8/exec"
     const method = "POST";
-    const fd = new FormData(this.form)
+    const body = new FormData(this.form)
 
-    fetch(url, { method:"POST", body:fd })
+    fetch(url, { method, body })
           .then(res => {
-              console.log(res)
+              console.log('...saved!')
     })
     
   }
@@ -86,8 +63,7 @@ class App extends Component {
   onMouseUp(){
 
     this.setState({
-      isDown:false,
-      name:''
+      isDown:false
     })
 
   }
@@ -105,6 +81,14 @@ class App extends Component {
   }
 
   componentDidMount(){
+
+  fetch("https://spreadsheets.google.com/feeds/list/1K7eINSHdez459GW6XfEfKC4PaNa7hLePh-IrWc-DKm8/od6/public/values?alt=json")
+      .then(res => res.json())
+      .then(data =>{
+        this.setState({
+          gss:data.feed.entry
+      })
+    })
 
    this.props.addGrid(this.grid)
 
@@ -125,6 +109,28 @@ class App extends Component {
     this.props.spriteData(result)
     this.props.spriteDataURL(this.canvas.getStage().toDataURL())
     
+  }
+
+
+  renderCards(){
+
+   return this.state.gss.map( entry => {
+    return (
+        <Card>
+          <CardImg top width="100%" src={entry.gsx$image.$t} alt={entry.gsx$name.$t} style={{imageRendering:'pixelated'}} />
+          <CardBody>
+            <CardTitle>{entry.gsx$name.$t}</CardTitle>
+            <CardSubtitle>{entry.gsx$tags.$t}</CardSubtitle>
+            <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</CardText>
+            <Button>Button</Button>
+          </CardBody>
+        </Card>
+      )
+
+    })
+
+   
+
   }
 
   renderCanvas(){
@@ -167,7 +173,7 @@ class App extends Component {
 
     return (
   
-      <Container fluid>
+      <Container>
         <Row>
             <Col xs="12" sm="12">
              <div style={{height:380, background:`black`, backgroundSize:'cover'}}>
@@ -223,17 +229,20 @@ class App extends Component {
             </Row>
           </FormGroup>
         </Form>
-
       }
       <hr />
       <h3>Collective Patterns</h3>
       <hr/>
+      <CardDeck>
+        {this.renderCards()}
+      </CardDeck>
          <Stage style={{display:'none'}} ref={el => this.canvas = el} width={8} height={8}>
           <Layer>
               {this.renderCanvas()}
           </Layer>
         </Stage>
-        </Container>
+      
+      </Container>
    
     );
   }
