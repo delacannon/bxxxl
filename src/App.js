@@ -8,15 +8,12 @@ import {CardImg, CardTitle, CardText, CardDeck, Card,CardColumns,
  CardSubtitle, CardBody, Container, Row, ButtonGroup, CardFooter,
  Col, Button, Form, FormGroup, Label, Input, FormText,Fade } from 'reactstrap';
 
-import { Stage, Layer, Rect, Text, Image } from 'react-konva';
+import { Stage, Layer, Rect, Image } from 'react-konva';
 import Konva from 'konva';
 
 import NotificationSystem from 'react-notification-system'
 
-import header from './header.jpg'
-
-
-var style = {
+const style = {
   NotificationItem: { 
     DefaultStyle: { 
       margin: '10px',
